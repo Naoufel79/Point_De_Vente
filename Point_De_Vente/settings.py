@@ -1,7 +1,7 @@
 
 import os
 from pathlib import Path
-from urllib.parse import urlparse
+
 """
 Django settings for Point_De_Vente project.
 
