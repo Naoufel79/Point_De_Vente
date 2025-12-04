@@ -43,12 +43,15 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    # Whitenoise avant staticfiles (optionnel mais recommandé)
+    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'Siliana',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # <--- ajoute ça
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -98,6 +101,10 @@ else:
         }
     }
 
+CSRF_TRUSTED_ORIGINS = os.environ.get(
+    "DJANGO_CSRF_TRUSTED_ORIGINS",
+    ""
+).split(",") if os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS") else []
 
 
 # Password validation
@@ -135,7 +142,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-
+# Whitenoise : meilleure gestion des fichiers statiques en prod
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -146,11 +154,12 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'login'
 
+
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'your_email@gmail.com'  # Replace with your Gmail address
-EMAIL_HOST_PASSWORD = 'your_app_password'  # Replace with your Gmail app password
-DEFAULT_FROM_EMAIL = 'your_email@gmail.com'  # Replace with your Gmail address
+EMAIL_HOST_USER = 'kharroubi.naoufel@gmail.com'  # Replace with your Gmail address
+EMAIL_HOST_PASSWORD = os.environ.get('ydzs lfnx hyrj vipy', '')  # app password
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
